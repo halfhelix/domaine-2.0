@@ -27,7 +27,7 @@ const { content } = Astro.props;
             width="50vw"
             height="50vh"
             data-index={i}
-            data-animate="true"
+            data-active="false"
           />
         )
       })}
@@ -67,7 +67,6 @@ const { content } = Astro.props;
 </section>
 
 <script>
-
   document.addEventListener("astro:page-load", () => {
     const detailBlocks = document.querySelectorAll('.detail-block');
     const serviceImages = document.querySelectorAll('.service-image');
@@ -146,7 +145,7 @@ const { content } = Astro.props;
     position: absolute;
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
     opacity: 1;
     scale: 1.1;
     transition: opacity var(--anim-lg), scale var(--anim-lg);
