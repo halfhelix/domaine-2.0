@@ -3,7 +3,6 @@ import ViewportObserver from "../../../animation/ViewportObserver";
 import { urlFor } from "../../../utils/sanityClient";
 const { content } = Astro.props;
 ---
-
 <ViewportObserver client:only="solid-js" bidirectional={false}>
   <section class="about">
 
@@ -39,6 +38,7 @@ const { content } = Astro.props;
           muted
           playsinline
           onloadedmetadata="this.muted = true"
+          poster={urlFor(content.image).width(1290).height(1935).auto('format').url()}
         >
           <source src={content.videoURL} type="video/mp4" />
         </video>
@@ -49,16 +49,16 @@ const { content } = Astro.props;
           width="50vw"
           height="100vh"
           sizes="
-            (max-width: 960px) 100%,
-            50%
+            (max-width: 960px) 100vw,
+            50vw
           "
           srcset={`
-            ${urlFor(content.image).width(800).height(1600).auto('format').url()} 800w,
-            ${urlFor(content.image).width(1290).height(2580).auto('format').url()} 1290w,
-            ${urlFor(content.image).width(1536).height(3072).auto('format').url()} 1536w,
-            ${urlFor(content.image).width(2700).height(5400).auto('format').url()} 2700w,
+            ${urlFor(content.image).width(800).height(1200).auto('format').url()} 800w,
+            ${urlFor(content.image).width(1290).height(1935).auto('format').url()} 1290w,
+            ${urlFor(content.image).width(1536).height(2304).auto('format').url()} 1536w,
+            ${urlFor(content.image).width(2700).height(4050).auto('format').url()} 2700w,
           `}
-          src={urlFor(content.image).width(800).height(1600).auto('format').url()}
+          src={urlFor(content.image).width(800).height(1200).auto('format').url()}
           class="image"
         />
       )}
