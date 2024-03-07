@@ -80,9 +80,9 @@ export async function getPages() {
 }
 
 export async function getBlogPageContent() {
-  const pageContent = await client.fetch(`*[_type == "pageBlog"]{ heading, subheading, "featuredPost": featuredPost->{title, slug, excerpt, mainImage, "category": category->{name, slug}} }`)
+  const pageContent = await client.fetch(`*[_type == "pageBlog"]{ heading, subheading, "featuredPost": featuredPost->{title, slug, excerpt, mainImage, imageAlt, "category": category->{name, slug}} }`)
   const posts = await client.fetch(`*[_type == "contentBlog"]{
-    title, slug, excerpt, mainImage, "category": category->{ name, slug }, publishedAt
+    title, slug, excerpt, mainImage, imageAlt, "category": category->{ name, slug }, publishedAt
   }|order(publishedAt desc)`)
   const categories = await client.fetch(`*[_type == "categoryBlog"]`)
   return { 
@@ -95,7 +95,7 @@ export async function getBlogPageContent() {
 export async function getBlogPosts() {
   const postContent = await client.fetch(`
     *[_type == 'contentBlog']{
-      title, slug, excerpt, mainImage, "authors": authors[]->{ name, title, image }, "category": category->{ name, slug }, "categories": categories[]->{ name, slug }, publishedAt, content[]
+      title, slug, excerpt, mainImage, imageAlt, "authors": authors[]->{ name, title, image }, "category": category->{ name, slug }, "categories": categories[]->{ name, slug }, publishedAt, content[]
     } | order(publishedAt desc)
   `)
   return postContent
