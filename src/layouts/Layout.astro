@@ -212,7 +212,8 @@ const currentPath = Astro.url.pathname;
 		--radius-lg: 14px;
 		--radius-rounded: 100vw;
 
-		--page-margin: clamp(20px, 2vw, 150px);
+		--page-margin: clamp(20px, 2vw, 60px);
+		--page-margin-narrow: clamp(35px, 6vw, 150px);
 		--content-margin: 1440px;
 		--header-height: min(var(--space-4xl), 15lvh);
 		--button-height: 40px;
@@ -241,9 +242,15 @@ const currentPath = Astro.url.pathname;
 
 	}
 
+	@media screen and (max-width:768px) {
+		:root {
+			--page-margin-narrow: var(--page-margin);
+		}
+	}
+
 	html.lenis {
-  height: auto;
-}
+		height: auto;
+	}
 
 	.lenis.lenis-smooth {
 		scroll-behavior: auto !important;
@@ -538,8 +545,12 @@ const currentPath = Astro.url.pathname;
 		color: inherit;
 	}
 
-	.input {
+	.hs-field-desc + .input,
+	label + .input {
 		margin-top: var(--space-xs);
+	}
+
+	.input {
 		margin-right: 0 !important;
 	}
 
