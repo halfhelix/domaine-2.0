@@ -24,9 +24,13 @@ const { content } = Astro.props;
     </ul>
   </div>
 
-  <div class="media">
+  <div class="media" data-embed={content.youtubeVideoID ? "true" : "false"}>
 
-    {content.videoURL ? (
+    {content.youtubeVideoID &&
+      <iframe class="video video-embed" src={`https://www.youtube.com/embed/${content.youtubeVideoID}?autoplay=1&loop=1&modestbranding=1&fs=0&controls=0&disablekb=1&mute=1&allow=autoplay&playlist=6M5p5TmyHP8`} width="1080" height="1920" title="Domaine Reel 2024: Vertical" frameborder="0"></iframe>
+    }
+
+    {content.videoURL && !content.youtubeVideoID && (
       <video 
         class="video" 
         width="50vw" 
@@ -41,7 +45,9 @@ const { content } = Astro.props;
         <source src={content.videoURL} type="video/mp4" />
       </video>
       
-    ) : (
+    )} 
+    
+    {!content.videoURL && !content.youtubeVideoID && (
 
       <img
         width="50vw"
@@ -66,14 +72,18 @@ const { content } = Astro.props;
 
 <script>
   import { createViewportObserver } from  '../../../utils/viewportObserver.js';
-  const section = document.querySelector('.about');
-  createViewportObserver(section, {bidirectional: false});
+  
 
   // document.addEventListener("astro:page-load", () => {
   //   createViewportObserver(section, {bidirectional: false});
   // })
 
-  document.addEventListener("astro:after-swap", () => {
+  document.addEventListener("astro:page-load", () => {
+    const section = document.querySelector('.about');
+    if (section) {
+      createViewportObserver(section, {bidirectional: false});
+    }
+
     const video = document.querySelector('.video');
     if (video && video instanceof HTMLVideoElement) video.muted = true;
   })
@@ -85,6 +95,7 @@ const { content } = Astro.props;
   .about {
     display: flex;
     flex-direction: row;
+    /* justify-content: space-between; */
     justify-content: stretch;
     align-items: flex-start;
     padding: var(--header-height) var(--page-margin) var(--space-2xl);
@@ -103,6 +114,8 @@ const { content } = Astro.props;
     opacity: 1;
     translate: 0 0;
     transition: opacity var(--anim-lg), translate var(--anim-lg);
+    position: sticky;
+    top: var(--header-height);
   }
 
   .about[data-animate="true"] .text{
@@ -150,6 +163,14 @@ const { content } = Astro.props;
     opacity: 1;
     transition: opacity var(--anim-lg);
   }
+  
+  .media[data-embed="true"] {
+    aspect-ratio: 1080 / 1920;
+    /* flex-basis: auto; */
+    /* flex-grow: 0; */
+    /* justify-self: flex-end; */
+    height: auto;
+  }
 
   .about[data-animate="true"] .media{
     opacity: 0;
@@ -162,10 +183,19 @@ const { content } = Astro.props;
     object-fit: cover;
   }
 
+  .video-embed {
+    pointer-events: none;
+  }
+
   @media screen and (max-width: 960px) {
     .about {
       flex-direction: column;
       justify-content: flex-start;
+    }
+
+    .text {
+      position: relative;
+      top: unset;
     }
 
     .media {

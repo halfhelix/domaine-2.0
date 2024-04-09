@@ -31,9 +31,7 @@ const sectionBlocks = (`
   _type == "sectionClients" => {
     _type, clients[]->{name, slug, image, logo, url}
   },
-  _type == "sectionAbout" => {
-    _type, heading, subheading, stats, "videoURL": video.asset -> url, image
-  },
+  _type == "sectionAbout" => {..., "videoURL": video.asset -> url, image},
   _type == "sectionServices" => {
     _type, heading, subheading, services[]
   },
@@ -54,6 +52,9 @@ const sectionBlocks = (`
   _type == "sectionMediaGrid" => {...},
   _type == "sectionServiceDetail" => {..., "service": service->{ ...}},
   _type == "sectionTextColumns" => {...},
+  _type == "sectionMediaGallery" => {..., media[]{..., "videoURL": video.asset->url, "imageMetadata": image.asset->{"dimensions": metadata.dimensions} } },
+  _type == "sectionContentBlocks" => {...,  blocks[]{..., media{..., "videoURL": video.asset->url, "imageMetadata": image.asset->{"dimensions": metadata.dimensions}} }  },
+  _type == "sectionTextImage" => {...},
 `)
 
 export async function getFooterContent() {
@@ -153,5 +154,29 @@ export async function getEventContent(slug) {
 export async function getServices() {
   const services = await client.fetch(`*[_type == "categoryService"]{...}`)
   return services
+}
+
+export async function getWorkPageContent() {
+  const content = await client.fetch(`*[_type == "pageWork"]{...}`)
+  return content[0]
+}
+
+export async function getProjectCategories() {
+  const categories = await client.fetch(`*[_type == "categoryProject"]{...}`)
+  return categories
+}
+
+
+
+export async function getProjects() {
+  const projects = await client.fetch(`*[_type == "contentProject"]{..., "tags": tags[]->{name, slug}, content[]{${sectionBlocks}} }`)
+  return projects
+}
+
+export async function getRelatedProjects(project) {
+  // console.log(project)
+  const relatedProjects = await client.fetch(`*[_type == "contentProject" && category._ref == '${project.category._ref}' && slug.current != '${project.slug.current}' ]{...}`)
+  const allOtherProjects = await client.fetch(`*[_type == "contentProject" && slug.current != '${project.slug.current}' ]{...}`)
+  return { relatedProjects, allOtherProjects}
 }
 
