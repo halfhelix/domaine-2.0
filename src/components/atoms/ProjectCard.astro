@@ -3,10 +3,10 @@ import { urlFor } from "../../utils/sanityClient";
 
 const { title, subtitle, image, slug, style, alt } = Astro.props;
 ---
-<article class="project-card" data-style={style}>
+<a class="project-card" data-style={style} href={`/work/${slug}`}>
   <img
     class="image"
-    sizes="33vw, (max-width: 768px) 50vw"
+    sizes={style == 'large' ? "60vw, (max-width: 768px) 100vw" : "33vw, (max-width: 768px) 50vw"}
     width="33vw"
     height="44vw"
     srcset={`
@@ -14,16 +14,18 @@ const { title, subtitle, image, slug, style, alt } = Astro.props;
       ${urlFor(image).width(400).height(533).auto('format').url()} 400w,
       ${urlFor(image).width(768).height(1024).auto('format').url()} 768w,
       ${urlFor(image).width(960).height(1280).auto('format').url()} 960w,
+      ${urlFor(image).width(1280).height(1706).auto('format').url()} 1280w,
+      ${urlFor(image).width(1440).height(1920).auto('format').url()} 1440w,
     `}
     loading="lazy"
     src={urlFor(image).url()} 
     alt={alt}
   />
-  <a class="project-info" href={`/work/${slug}`}>
+  <div class="project-info">
     <h2 class="project-title h4">{title}</h2>
     <p class="project-subtitle">{subtitle}</p>
-  </a>
-</article>
+  </div>
+</a>
 
 <style>
   .project-card {

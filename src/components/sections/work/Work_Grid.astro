@@ -3,23 +3,31 @@ import { getProjects } from "../../../utils/sanityClient"
 import ProjectCard from "../../atoms/ProjectCard.astro";
 
 const projects = await getProjects();
+const { category } = Astro.props;
+let actualIndex = 0;
+// console.log(projects[0])
 ---
 <section class="work_grid">
-  {projects.map((project, i) => (
-    <ProjectCard
-      title={project.title}
-      subtitle={project.subtitle}
-      slug={project.slug.current}
-      image={project.thumbnail}
-      style={i % 12 == 0 ? "large" : "default"}
-      alt={project.thumbnailAlt}
-    />
-  ))}
+  {projects.map((project, i) => {
+    if (!project.hideProject && category && category._id == project.category._ref || !project.hideProject && !category ) {
+      actualIndex++;
+      return (
+        <ProjectCard
+          title={project.title}
+          subtitle={project.subtitle}
+          slug={project.slug.current}
+          image={project.thumbnail}
+          style={(actualIndex - 1) % 12 == 0 ? "large" : "default"}
+          alt={project.thumbnailAlt}
+        />
+      )
+    }
+  })}
 </section>
 
 <style>
   .work_grid {
-    padding: 0 var(--page-margin);
+    padding: 0 var(--page-margin) var(--space-lg);
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: var(--page-margin);
