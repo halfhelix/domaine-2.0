@@ -51,9 +51,20 @@ const { content } = Astro.props;
     }
   }
 
+  // const heroSection = document.querySelector('.hero')
+  // import { animatePageLoad } from "../../../animation/PageLoadAnimation";
+  // animatePageLoad(heroSection)
+
+// const heroSection = document.querySelector('.hero');
+
+// if (heroSection instanceof HTMLElement ) {
+//   animatePageLoad(heroSection)
+// }
+
   document.addEventListener("astro:page-load", () => {
     animateLoad()
   })
+
 
 </script>
 

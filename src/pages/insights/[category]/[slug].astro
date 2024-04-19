@@ -5,6 +5,7 @@ import BlogPostSidebar from '../../../components/sections/blog/blogPost/BlogPost
 import BlogPostBody from '../../../components/sections/blog/blogPost/BlogPostBody.astro';
 import { getBlogPosts, getRelatedBlogPosts } from '../../../utils/sanityClient';
 import RelatedPosts from '../../../components/sections/blog/blogPost/RelatedPosts.astro';
+import Form from '../../../components/sections/global/Form.astro';
 
 interface Props {
 	data: any;
@@ -49,12 +50,19 @@ console.log(data)
     <div class="blog-post-content">
       <BlogPostBody
         content={data.content}
+        authors={data.authors}
       />
       <BlogPostSidebar
         posts={allPosts}
         category={data.category}
       />
     </div>
+
+    <Form 
+      heading={data.category.contactFormHeading}
+      text={data.category.contactFormText}
+      hubspotFormId={data.category.hubspotFormId}
+    />
 
     <RelatedPosts
       posts={relatedPosts}
