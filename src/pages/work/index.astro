@@ -2,7 +2,7 @@
 import Layout from '../../layouts/Layout.astro'
 import WorkHero from '../../components/sections/work/Work_Hero.astro'
 import WorkGrid from '../../components/sections/work/Work_Grid.astro'
-import { getWorkPageContent, urlFor } from '../../utils/sanityClient'
+import { getProjects, getWorkPageContent, urlFor } from '../../utils/sanityClient'
 import type { SanityAsset } from '@sanity/image-url/lib/types/types'
 
 interface workPageContent {
@@ -13,7 +13,7 @@ interface workPageContent {
 }
 
 const content: workPageContent = await getWorkPageContent()
-// console.log(content)
+const projects = await getProjects()
 
 ---
 <Layout 
@@ -24,7 +24,7 @@ const content: workPageContent = await getWorkPageContent()
 >
 	<main>
     <WorkHero heading={content.heading} />
-    <WorkGrid />
+    <WorkGrid projects={projects} />
 	</main>
 </Layout>
 
