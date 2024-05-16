@@ -1,31 +1,31 @@
 ---
-import { urlFor } from "../../../utils/sanityClient";
 import ArrowLink from "../../atoms/ArrowLink.astro";
 import SanityImage from "../../atoms/SanityImage.astro";
 
 const { content } = Astro.props;
 // console.log(content.image.asset.metadata)
 ---
-<section class="text-image" data-layout={content.layout} data-inverted={content.invertTextColor ? "true" : "false"} style={`background-color:${content.backgroundColor ? content.backgroundColor.hex : 'transparent'}`} >
-  <span class="content">
+<section class="text-image" data-layout={content.layout} data-inverted={content.invertTextColor ? "true" : "false"} style={`background-color:${content.backgroundColor ? content.backgroundColor.hex : "transparent"}`} >
+  <div class="content">
     <div class="text">
       <div class="section-title">
         {content.eyebrow && <p class="eyebrow caption">{content.eyebrow}</p>}
         {content.heading && <h2 class="h4">{content.heading}</h2>}
       </div>
-      {content.description && <p class="">{content.description}</p>}
+      {content.description && <p class="description">{content.description}</p>}
     </div>
-    {content.buttonText && content.buttonURL && <ArrowLink text={content.buttonText} url={content.buttonURL}>}
-  </span>
-  <span class="media">
+    {content.buttonText && content.buttonURL && <ArrowLink text={content.buttonText} url={content.buttonURL}/>}
+  </div>
+  <div class="media">
     <SanityImage
       image={content.image}
       sizes="(min-width: 960px) 60vw, 100vw"
     />
-  </span>
+  </div>
 </section>
 
 <style>
+
   .text-image {
     display: flex;
     flex-direction: row;

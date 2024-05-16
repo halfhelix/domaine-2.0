@@ -41,7 +41,6 @@ const sectionBlocks = (`
   _type == "sectionSpeakers" => {..., speakers[]{..., image{${imageFields}}, companyLogo{${imageFields}} } },
 `)
 
-const projectFields = `..., "tags": tags[]->{name, slug}, mainImage{${imageFields}}, thumbnail{${imageFields}}, content[]{${sectionBlocks}} } | order(launchDate desc)`
 
 
 // Validated
@@ -75,22 +74,16 @@ export async function getServices() {
   return services
 }
 
-
-
-
-
-// Unvalidated
-
-export async function getSEOSettings() {
-  const content = await client.fetch(`*[_type == "seoSettings"]`)
-  return content
+export async function getServiceGroups(service) {
+  const serviceGroups = await client.fetch(`*[_type == "categoryServiceGroup" && service._ref == "${service}" ]{ ... } | order(orderRank)`);
+  return serviceGroups;
 }
 
-export async function getPages() {
-  const content = await client.fetch(`*[_type == "pageGeneral"]{..., content[]{${sectionBlocks}},}`)
-  return content
+export async function getServiceGroupDeliverables(group) {
+  // console.log(group)
+  const deliverables = await client.fetch(`*[_type == "contentDeliverable" && category._ref == "${group}"]{...} | order(orderRank)`);
+  return deliverables;
 }
-
 
 // Blog
 
@@ -113,6 +106,60 @@ export async function getBlogPosts() {
     *[_type == 'contentBlog']{..., mainImage{${imageFields}}, authors[]->{..., image{${imageFields}}}, category->{...}, categories[]->{...} } | order(publishedAt desc)
   `)
   return postContent
+}
+
+// Projects
+
+const projectFields = `..., "tags": tags[]->{name, slug}, mainImage{${imageFields}}, thumbnail{${imageFields}}, content[]{${sectionBlocks}}`
+
+export async function getWorkPageContent() {
+  const content = await client.fetch(`*[_type == "pageWork"]{...}`)
+  return content[0]
+}
+
+export async function getProjects() {
+  const projects = await client.fetch(`*[_type == "contentProject" && !hideProject ]{${projectFields}} | order(launchDate desc)`)
+  return projects
+}
+
+export async function getRelatedProjects(project) {
+  const relatedProjects = await client.fetch(`*[_type == "contentProject" && category._ref == '${project.category._ref}' && slug.current != '${project.slug.current}' && !hideProject ]{..., thumbnail{${imageFields}} } | order(launchDate desc)`)
+  return relatedProjects
+}
+
+export async function getProjectCategories() {
+  const categories = await client.fetch(`*[_type == "categoryProject"]{...}`)
+  return categories
+}
+
+export async function getProjectsByCategory(category) {
+  const projects = await client.fetch(`*[_type == "contentProject" && category._ref == '${category._id}' && !hideProject ]{${projectFields}} | order(launchDate desc)`)
+  return projects
+}
+
+export async function getProjectTags() {
+  const tags = await client.fetch(`*[_type == "tagProject"]{...}`)
+  return tags
+}
+
+export async function getProjectsByTag(tag) {
+  const projects = await client.fetch(`*[_type == "contentProject" && '${tag._id}' in tags[]->_id ]{${projectFields}} | order(launchDate desc)`)
+  return projects
+}
+
+
+
+
+// Unvalidated
+
+export async function getSEOSettings() {
+  const content = await client.fetch(`*[_type == "seoSettings"]`)
+  return content
+}
+
+export async function getPages() {
+  const content = await client.fetch(`*[_type == "pageGeneral"]{..., content[]{${sectionBlocks}},}`)
+  return content
 }
 
 export async function getRelatedBlogPosts(project) {
@@ -149,9 +196,6 @@ export async function getEventContent(slug) {
   return content
 }
 
-
-
-
 export async function getDeliverables() {
   const deliverables = await client.fetch(`*[_type == "contentDeliverable" ]{ ..., category->{..., service->{...}} } | order(orderRank)`);
   return deliverables;
@@ -162,58 +206,13 @@ export async function getServiceDeliverables(service) {
   return deliverables;
 }
 
-export async function getServiceGroups(service) {
-  const serviceGroups = await client.fetch(`*[_type == "categoryServiceGroup" && service._ref == "${service}" ]{ ... } | order(orderRank)`);
-  return serviceGroups;
-}
-
-export async function getServiceGroupDeliverables(group) {
-  // console.log(group)
-  const deliverables = await client.fetch(`*[_type == "contentDeliverable" && category._ref == "${group}"]{...} | order(orderRank)`);
-  return deliverables;
-}
-
 export async function getServiceCategoryGroup() {
   const serviceGroup = await client.fetch(`*[_type == "categoryServiceGroup" ]{ ..., service->{...}} | order(orderRank)`);
   return serviceGroup;
 }
 
 
-// Projects
 
-export async function getWorkPageContent() {
-  const content = await client.fetch(`*[_type == "pageWork"]{...}`)
-  return content[0]
-}
 
-export async function getProjectCategories() {
-  const categories = await client.fetch(`*[_type == "categoryProject"]{...}`)
-  return categories
-}
 
-export async function getProjectTags() {
-  const tags = await client.fetch(`*[_type == "tagProject"]{...}`)
-  return tags
-}
-
-export async function getProjects() {
-  const projects = await client.fetch(`*[_type == "contentProject" && !hideProject ]{${projectFields}`)
-  return projects
-}
-
-export async function getProjectsByCategory(category) {
-  const projects = await client.fetch(`*[_type == "contentProject" && category._ref == '${category._id}' && !hideProject ]{${projectFields}`)
-  return projects
-}
-
-export async function getProjectsByTag(tag) {
-  const projects = await client.fetch(`*[_type == "contentProject" && '${tag._id}' in tags[]->_id ]{${projectFields}`)
-  return projects
-}
-
-export async function getRelatedProjects(project) {
-  const relatedProjects = await client.fetch(`*[_type == "contentProject" && category._ref == '${project.category._ref}' && slug.current != '${project.slug.current}' && !hideProject ]{..., thumbnail{${imageFields}} } | order(launchDate desc)`)
-  const allOtherProjects = await client.fetch(`*[_type == "contentProject" && slug.current != '${project.slug.current}' && !hideProject ]{..., thumbnail{${imageFields}} } | order(launchDate desc)`)
-  return { relatedProjects, allOtherProjects}
-}
 

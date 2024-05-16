@@ -1,10 +1,13 @@
 ---
-import WorkFilter from "./Work_Filter.astro";
+import { getProjectCategories } from "../../../../utils/sanityClient";
+import SidebarLinks from "../../../atoms/SidebarLinks.astro";
+
+const categories = await getProjectCategories();
 
 const { category, heading } = Astro.props;
 ---
 <section class="work_hero">
-  <WorkFilter activeCategory={category} />
+  <SidebarLinks links={categories} activeLink={category} slugRoot="/work" rootLabel="All Work" />
   <h1 class="section-title">{category && category.workPageHeading ? category.workPageHeading : heading}</h1>
 </section>
 

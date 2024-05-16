@@ -1,17 +1,15 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
-import BlogIndexHero from '../../../components/sections/blog/blogIndex/BlogIndexHero.astro';
-import BlogIndexFeed from '../../../components/sections/blog/blogIndex/BlogIndexFeed.astro';
-import BlogIndexSidebar from '../../../components/sections/blog/blogIndex/BlogIndexSidebar.astro';
+import BlogIndexHero from '../../../components/sections/blog/blogIndex/BlogIndex_Hero.astro';
+import BlogIndexFeed from '../../../components/sections/blog/blogIndex/BlogIndex_Feed.astro';
 import { getBlogCategories, getBlogPageContent, getBlogPosts } from '../../../utils/sanityClient';
-import { any } from 'astro/zod';
-
-// const data = await getBlogPageContent();
+import SidebarLinks from '../../../components/atoms/SidebarLinks.astro';
 
 interface Props {
 	data: any;
   posts: any;
   categories: any,
+  category: any
 }
 
 // export const prerender = true;
@@ -19,22 +17,21 @@ interface Props {
 
 export async function getStaticPaths() {
 
-  // const pages = await getPages();
   const data = await getBlogPageContent();
   const categories = await getBlogCategories();
 
   return categories.map((category) => {
     return {
       params: { category: category.slug.current },
-      props: { data: data, categories: categories }
+      props: { data: data, categories: categories, category }
     }
   })
 }
 
 // const { slug } = Astro.params;
 
-const { category } = Astro.params;
-const { data, categories } = Astro.props;
+// const { category } = Astro.params;
+const { data, categories, category } = Astro.props;
 
 const posts = await getBlogPosts();
 ---
@@ -50,14 +47,16 @@ const posts = await getBlogPosts();
     />
 
     <div class="blog-index-main">
-        
-        <BlogIndexSidebar
-            content={categories}
-            activeCategory={category}
+
+        <SidebarLinks
+            links={categories}
+            activeLink={category}
+            slugRoot="/insights"
+            rootLabel="All Insights"
         />
 
         <BlogIndexFeed
-            content={posts.filter(post => post.category.slug.current == category && data.featuredPost.slug.current != post.slug.current)}
+            content={posts.filter(post => post.category.slug.current == category.slug.current && data.featuredPost.slug.current != post.slug.current)}
         />
 
     </div>
@@ -77,19 +76,20 @@ const posts = await getBlogPosts();
 </script>
 
 <style>
-    .blog-index-main {
-        display: flex;
-        flex-direction: row;
-        justify-content: stretch;
-        align-items: flex-start;
-        padding: var(--space-2xl) 0;
-        gap: var(--space-xl);
-    }
+  .blog-index-main {
+      display: flex;
+      flex-direction: row;
+      justify-content: stretch;
+      align-items: flex-start;
+      padding: var(--space-2xl) var(--page-margin);
+      gap: var(--space-3xl);
+  }
 
-    @media screen and (max-width: 768px) {
+  @media screen and (max-width: 960px) {
 
-        .blog-index-main {
-            flex-direction: column;
-        }
-    }
+      .blog-index-main {
+          flex-direction: column;
+          gap: var(--space-lg);
+      }
+  }
 </style>
