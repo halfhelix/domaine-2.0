@@ -1,0 +1,27 @@
+---
+import SanityImage from "../../atoms/SanityImage.astro";
+const { content } = Astro.props;
+---
+<section class="media-fullbleed">
+  <div class="media">
+    <SanityImage 
+      sizes="100vw"
+      image={content.image}
+      alt={content.image.alt}
+      aspectRatio={16 / 9}
+    />
+  </div>
+
+</section>
+
+<style>
+  .media-fullbleed {
+    padding: var(--page-margin);
+  }
+
+  .media {
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+</style>

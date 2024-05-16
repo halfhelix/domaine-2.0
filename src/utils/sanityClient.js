@@ -14,52 +14,75 @@ export function urlFor(source) {
   return builder.image(source)
 }
 
-export async function getSEOSettings() {
-  const content = await client.fetch(`*[_type == "seoSettings"]`)
-  return content
-}
+// Reusable Fields
+const imageFields = 'crop, asset->{_id, metadata}, alt'
+const projectCardFields = `"tags": tags[]->{name, slug}, mainImage{${imageFields}}, thumbnail{${imageFields}}`
+
+const sectionBlocks = (`
+  ...,
+  _type == "sectionHero" => { ..., image{${imageFields}} },
+  _type == "sectionClients" => {..., clients[]->{..., logo{${imageFields}}, image{${imageFields}}} },
+  _type == "sectionAbout" => {..., image{${imageFields}}, "videoURL": video.asset -> url},
+  _type == "sectionPartners" => {..., logos[]{..., partnerLogo{${imageFields}} } },
+  _type == "sectionAgencies" => {..., agencies[]{..., logo{${imageFields}}} },
+
+
+  _type == "sectionServices" => {...},
+  _type == "sectionContact" => {...},
+  _type == "sectionWork" => {..., projects[]->{..., ${projectCardFields} }},
+  _type == "sectionTextHero" => {...},
+  _type == "sectionMediaFullbleed" => {..., image{${imageFields}} },
+  _type == "sectionMediaGrid" => {...},
+  _type == "sectionServiceDetail" => {..., image{${imageFields}}, service->{ ...}},
+  _type == "sectionTextColumns" => {...},
+  _type == "sectionMediaGallery" => {..., media[]{..., "videoURL": video.asset->url, image{${imageFields}} } },
+  _type == "sectionContentBlocks" => {...,  blocks[]{..., "videoURL": video.asset->url, image{${imageFields}} }  },
+  _type == "sectionTextImage" => {..., image{${imageFields}} },
+  _type == "sectionSpeakers" => {..., speakers[]{..., image{${imageFields}}, companyLogo{${imageFields}} } },
+`)
+
+const projectFields = `..., "tags": tags[]->{name, slug}, mainImage{${imageFields}}, thumbnail{${imageFields}}, content[]{${sectionBlocks}} } | order(launchDate desc)`
+
+
+// Validated
 
 export async function getHeaderContent() {
   const content = await client.fetch(`*[_type == "sectionHeader"]`)
   return content
 }
 
-const image = 'image{ crop, asset->{_id, metadata}, alt}'
-const imageFields = 'crop, asset->{_id, metadata}, alt'
-const projectCardFields = `"tags": tags[]->{name, slug}, mainImage{${imageFields}}, thumbnail{${imageFields}}`
-
-const sectionBlocks = (`
-  ...,
-  _type == "sectionHero" => {
-    _type, eyebrow, heading, subheading, textAlignment, image, imageAlt, "videoURL": video.asset -> url, "imageURL": image.asset -> url, badgeText, buttonText, buttonURL, jumplink
-  },
-  _type == "sectionClients" => {..., clients[]->{...} },
-  _type == "sectionAbout" => {..., "videoURL": video.asset -> url, image},
-  _type == "sectionServices" => {...},
-  _type == "sectionContact" => {...},
-  _type == "sectionWork" => {..., projects[]->{..., ${projectCardFields} }},
-  _type == "sectionPartners" => {...},
-  _type == "sectionAgencies" => {...},
-  _type == "sectionTextHero" => {...},
-  _type == "sectionMediaFullbleed" => {..., image{${imageFields}} },
-  _type == "sectionMediaGrid" => {...},
-  _type == "sectionServiceDetail" => {..., image{${imageFields}}, service->{ ...}},
-  _type == "sectionTextColumns" => {...},
-  _type == "sectionMediaGallery" => {..., media[]{..., "videoURL": video.asset->url, ${image} } },
-  _type == "sectionContentBlocks" => {...,  blocks[]{..., "videoURL": video.asset->url, ${image} }  },
-  _type == "sectionTextImage" => {..., ${image} },
-  _type == "sectionSpeakers" => {..., speakers[]{..., image{${imageFields}}, companyLogo{${imageFields}} } },
-`)
-
-const projectFields = `..., "tags": tags[]->{name, slug}, mainImage{${imageFields}}, thumbnail{${imageFields}}, content[]{${sectionBlocks}} } | order(launchDate desc)`
-
 export async function getFooterContent() {
   const content = await client.fetch(`*[_type == "sectionFooter"]`)
   return content
 }
 
+// Home
+
 export async function getHomePageContent() {
   const content = await client.fetch(`*[_type == "pageHome"]{..., content[]{${sectionBlocks}} }`)
+  return content[0]
+}
+
+// Services
+
+export async function getServicesPageContent() {
+  const pageContent = await client.fetch(`*[_type == "pageServices"]{ ..., content[]{${sectionBlocks}}}`);
+  return pageContent[0];
+}
+
+export async function getServices() {
+  const services = await client.fetch(`*[_type == "categoryService"]{...} | order(orderRank)`)
+  return services
+}
+
+
+
+
+
+// Unvalidated
+
+export async function getSEOSettings() {
+  const content = await client.fetch(`*[_type == "seoSettings"]`)
   return content
 }
 
@@ -127,17 +150,7 @@ export async function getEventContent(slug) {
 }
 
 
-// Services
 
-export async function getServicesPageContent() {
-  const pageContent = await client.fetch(`*[_type == "pageServices"]{ ..., content[]{${sectionBlocks}}}`);
-  return pageContent[0];
-}
-
-export async function getServices() {
-  const services = await client.fetch(`*[_type == "categoryService"]{...} | order(orderRank)`)
-  return services
-}
 
 export async function getDeliverables() {
   const deliverables = await client.fetch(`*[_type == "contentDeliverable" ]{ ..., category->{..., service->{...}} } | order(orderRank)`);

@@ -2,14 +2,17 @@
 import Layout from '../layouts/Layout.astro';
 import SectionBlock from '../components/sections/SectionBlock.astro';
 
-import { getHomePageContent } from '../utils/sanityClient';
+import { getHomePageContent, urlFor } from '../utils/sanityClient';
 const data = await getHomePageContent();
+// console.log(data)
 ---
-<Layout 
-	title="E-commerce Design & Development Partner"
+<Layout
+	title={data.metaTitle ? data.metaTitle : data.title} 
+	description={data.metaDescription && data.metaDescription}
+	image={data.metaImage && urlFor(data.metaImage).url()}
 >
 	<main>
-		{data[0].content.map((contentBlock) => (
+		{data.content.map((contentBlock) => (
 			<SectionBlock block={contentBlock} />
 		))}
 	</main>

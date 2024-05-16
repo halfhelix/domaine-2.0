@@ -3,10 +3,10 @@ import Layout from '../../../layouts/Layout.astro';
 import BlogPostHero from '../../../components/sections/blog/blogPost/BlogPostHero.astro';
 import BlogPostSidebar from '../../../components/sections/blog/blogPost/BlogPostSidebar.astro';
 import BlogPostBody from '../../../components/sections/blog/blogPost/BlogPostBody.astro';
-import BlogPostCTA from '../../../components/sections/blog/blogPost/BlogPostCTA.astro';
+import TextCTA from '../../../components/sections/global/TextCTA.astro';
 import { getBlogPosts, getRelatedBlogPosts } from '../../../utils/sanityClient';
 import RelatedPosts from '../../../components/sections/blog/blogPost/RelatedPosts.astro';
-import Form from '../../../components/sections/global/Form.astro';
+import ContactForm from '../../../components/sections/global/ContactForm.astro';
 
 interface Props {
 	data: any;
@@ -31,7 +31,7 @@ const { slug, category } = Astro.params;
 const { data, allPosts } = Astro.props;
 
 const relatedPosts = await getRelatedBlogPosts(data)
-console.log(data)
+// console.log(data)
 ---
 
 <Layout 
@@ -64,7 +64,7 @@ console.log(data)
     </div>
 
     {data.callToAction && data.callToAction.heading && data.callToAction.buttonText && data.callToAction.buttonUrl ? 
-      <BlogPostCTA
+      <TextCTA
         heading={data.callToAction.heading}
         subheading={data.callToAction.subheading}
         buttonText={data.callToAction.buttonText}
@@ -73,7 +73,7 @@ console.log(data)
     : null }
 
     {!data.formOverride || !data.formOverride.hideForm ? 
-      <Form 
+      <ContactForm 
         heading={data.category.contactFormHeading}
         text={data.category.contactFormText}
         hubspotFormId={data.category.hubspotFormId}
