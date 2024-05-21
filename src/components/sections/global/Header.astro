@@ -5,7 +5,7 @@ import { Icon } from 'astro-icon/components';
 const data = await getHeaderContent();
 // console.log(data)
 ---
-<header class="header" data-animate="true" transition:persist>
+<header class="header">
   <span class="navigation">
     <a class="logo" href="/" aria-label="Domaine homepage">
       <Icon name="domaine-wordmark" />
@@ -24,24 +24,6 @@ const data = await getHeaderContent();
   </a>
 </header>
 
-<script>
-
-  const animateLoad = () => {
-    const heroSection = document.querySelector('.header')
-    if (heroSection instanceof HTMLElement ) {
-      heroSection.dataset.animate = "false";
-    }
-  }
-
-  document.addEventListener("astro:after-swap", () => {
-    animateLoad()
-  })
-
-  document.addEventListener("astro:page-load", () => {
-    animateLoad()
-  })
-</script>
-
 <style>
 
   .header {
@@ -57,12 +39,14 @@ const data = await getHeaderContent();
     z-index: 999;
     translate: 0 0;
     transition: translate var(--anim-md);
+    /* mix-blend-mode: difference;
+    color: var(--color-reverse); */
     /* height: var(--header-height); */
   }
 
-  .header[data-animate="true"] {
+  /* .header[data-animate-load="true"] {
     translate: 0 -100%;
-  }
+  } */
 
   .navigation {
     display: flex;
@@ -76,6 +60,7 @@ const data = await getHeaderContent();
     display: flex;
     flex-direction: column;
     justify-content: center;
+    color: currentColor;
   }
 
   .logo [data-icon] {
@@ -94,6 +79,7 @@ const data = await getHeaderContent();
   .navigation-link {
 		padding: var(--space-xs) var(--space-sm);
     transition: background var(--anim-sm), color var(--anim-sm);
+    color: inherit;
   }
 
   .navigation-link:hover {

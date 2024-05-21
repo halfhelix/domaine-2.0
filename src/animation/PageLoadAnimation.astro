@@ -1,0 +1,35 @@
+
+<script>
+  
+  const animateLoad = () => {
+    let animatedElements = document.querySelectorAll('[data-animate-load="true"]')
+
+    // let sessionStarted = sessionStorage.getItem("sessionStarted");
+
+    animatedElements.forEach((element) => {
+      if (element instanceof HTMLElement) {
+
+        const delay = element.dataset.animateDelay ? parseFloat(element.dataset.animateDelay) : 0
+        
+        setTimeout(() => {
+          return element.dataset.animateLoad = "false"
+        }, delay)
+      }
+    })
+
+    // sessionStorage.setItem("sessionStarted", "true");
+  }
+
+  // Only fires on initial navigation
+  document.addEventListener("DOMContentLoaded", () => {
+    // console.log("DOM Loaded")
+    // animateLoad()
+  })
+
+  // Fires on each page change
+  document.addEventListener('astro:page-load', () => {
+    // console.log("Astro: Page Load")
+    animateLoad()
+  });
+  
+</script>

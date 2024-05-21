@@ -4,6 +4,15 @@ import Header from '../components/sections/global/Header.astro';
 import HeaderMobile from '../components/sections/global/HeaderMobile.astro';
 import Footer from '../components/sections/global/Footer.astro'
 import { getSEOSettings, urlFor } from '../utils/sanityClient';
+import PageLoadAnimation from '../animation/PageLoadAnimation.astro';
+import ViewportAnimation from '../animation/ViewportAnimation.astro';
+
+import '../variables/typography.css';
+import '../variables/spacing.css';
+import '../variables/color.css';
+import '../variables/buttons.css';
+import '../variables/forms.css';
+import '../variables/animation.css'
 
 interface Props {
 	title: string;
@@ -16,11 +25,6 @@ const data = await getSEOSettings();
 const { title, description, image, theme } = Astro.props;
 const currentPath = Astro.url.pathname;
 
-import '../variables/typography.css';
-import '../variables/spacing.css';
-import '../variables/color.css';
-import '../variables/buttons.css';
-import '../variables/forms.css';
 ---
 
 <!doctype html>
@@ -37,7 +41,6 @@ import '../variables/forms.css';
 
 		<!-- Google tag (gtag.js) -->
 		<script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-8YW8NFYNGR"></script>
-		<script src="../utils/lenis.js"></script>
 
 		<!-- Google Analytics -->
 		<script is:inline>
@@ -80,6 +83,8 @@ import '../variables/forms.css';
 		<meta name="twitter:image" content={image ? image : urlFor(data[0].siteImage).url()}>
 
 		<title>{title} | {data[0].siteTitle}</title>
+
+		<script src="../utils/lenis.js"></script>
 		<ViewTransitions />
 	</head>
 	<body>
@@ -92,6 +97,8 @@ import '../variables/forms.css';
 		<HeaderMobile />
 		<slot />
 		<Footer />
+		<PageLoadAnimation />
+		<ViewportAnimation />
 	</body>
 </html>
 
