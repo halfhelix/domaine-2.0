@@ -1,40 +1,24 @@
-# Astro Starter Kit: Basics
+# Domaine Agency Site
+Domaine is the world's largest independent Shopify design & development partner. Our agency site is built for performance, scalability, and ease-of-use.
 
-```sh
-npm create astro@latest -- --template basics
-```
+[View Live Site](https://meetdomaine.com/)
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/basics)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/basics)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/basics/devcontainer.json)
+## 🚀 Astro
+Domaine uses [Astro](https://astro.build) as a lightweight framework for SSR and SSG. Astro ships zero javascript by default, allowing for many of the conveniences of Next.js but without the bulk and performance concerns of React. If needed, components can opt-in to a reactivity framework like React, but so far this has not been needed.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+We use hybrid rendering throughout this project, but in reality this results in all pages being fully static, leading to great performance and SEO optimization. We fetch all CMS content on the server at build time, so no client-side rendering is needed. More on CMS data-fetching below.
 
-![just-the-basics](https://github.com/withastro/astro/assets/2244813/a0a5533c-a856-4198-8470-2d67b1d7c554)
+Astro also comes with some nice quality-of-life features like performance auditing, viewport transitions, single-file components, scoped CSS, and much more.
 
-## 🚀 Project Structure
+[Learn more about Astro](https://astro.build)
 
-Inside of your Astro project, you'll see the following folders and files:
 
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src/
-│   ├── components/
-│   │   └── Card.astro
-│   ├── layouts/
-│   │   └── Layout.astro
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+## 🗂️ Sanity
+We use Sanity as the CMS for our site, for its extensibility, flexibility, and optimizations. The site is built modularly using a set of reusable sections, giving editors a high level of control over page building outside of the core site pages. Once content changes have been published, they can be deployed directly from Sanity to either Staging or Production.
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## ✨ Deployment
+We use [Vercel](https://www.vercel.com) to manage deployments of the site via their GitHub integration. Pushes to the `staging` or `master` branch will trigger a build in Vercel and deploy to [staging.meetdomaine.com](https://staging.meetdomaine.com/) or [meetdomaine.com](https://meetdomaine.com/) respectively.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
 
 ## 🧞 Commands
 
@@ -49,6 +33,5 @@ All commands are run from the root of the project, from a terminal:
 | `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
 | `npm run astro -- --help` | Get help using the Astro CLI                     |
 
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+## 👀 Questions, feedback, bugs?
+Reach out to [trey@meetdomaine.com](trey@meetdomaine.com)!
