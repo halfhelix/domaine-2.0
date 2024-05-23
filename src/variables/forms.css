@@ -28,7 +28,7 @@ form,
   --base-size: 16;
   letter-spacing: 0;
   margin: 0;
-  color: var(--color-foreground) !important;
+  color: var(--color-foreground);
 }
 
 .hs-field-desc {
@@ -246,6 +246,21 @@ input[type="checkbox"]:checked::before {
   text-align: center;
 }
 
+.hs-error-msg {
+  width: 100%;
+  display: block;
+  letter-spacing: -0.02em;
+  background-color: var(--color-error);
+  color: var(--color-reverse);
+  border-radius: var(--form-field-radius);
+  padding: var(--space-2xs) var(--space-xs);
+}
+
+label.hs-error-msg {
+  color: var(--color-reverse);
+}
+
+
 
 /* Hubspot Styling -- Rich Text */
 
@@ -261,14 +276,16 @@ input[type="checkbox"]:checked::before {
   text-decoration: underline;
 }
 
-.hs-error-msg {
-  width: 100%;
-  display: block;
-  letter-spacing: -0.02em;
-  background-color: var(--color-error);
-  color: var(--color-reverse);
-  border-radius: var(--form-field-radius);
-  padding: var(--space-2xs) var(--space-xs);
+/* Hubspot Styling -- Single Field Form */
+
+
+/* Hubspot Styling -- Legal Consent*/
+
+.hs-form .legal-consent-container {
+  margin-top: var(--space-xs);
+  color: var(--color-foreground-secondary);
+  --min-size: 12;
+  --base-size: 12;
 }
 
 /* Radio Button Group */
@@ -295,3 +312,4 @@ input[type="checkbox"]:checked::before {
 .radio-button-group .button-radio:last-child {
   border-radius: 0 var(--radius-rounded) var(--radius-rounded) 0;
 }
+
