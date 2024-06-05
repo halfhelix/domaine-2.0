@@ -99,6 +99,7 @@ h4, .h4,
 h5, .h5,
 h6, .h6,
 p,
+a,
 legend,
 input,
 label,
@@ -179,6 +180,10 @@ p,
   letter-spacing: 0;
   margin: 0;
   font-weight: 400;
+}
+
+p a {
+  text-decoration: underline;
 }
 
 .caption {

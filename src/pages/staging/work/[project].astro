@@ -1,0 +1,28 @@
+---
+import { sanityClient } from 'sanity:client'
+import LayoutDomaine from '../../../layouts/LayoutDomaine.astro';
+import { paths } from '../../../components/global/utils/paths';
+
+interface Props {
+    content: any
+}
+
+export async function getStaticPaths() {
+    const projects = await sanityClient.fetch(`*[_type == "type_project" && agencyBrand->name == "Domaine"] { ..., industry->{...} }`)
+    return projects.map((project) => {
+        return {
+            params: { project: project.slug.current },
+            props: { content: project }
+        }
+    })
+}
+
+const { content } = Astro.props
+console.log(content)
+---
+<LayoutDomaine
+    title={content.title}
+>
+    <a href={`${paths.root.projects.path}/${content.industry.slug.current}`}><h6>{content.industry.title}</h6></a>
+    <h1>{content.title}</h1>
+</LayoutDomaine>

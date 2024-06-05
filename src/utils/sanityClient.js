@@ -38,6 +38,7 @@ const sectionBlocks = (`
   _type == "sectionMediaGallery" => {..., media[]{..., "videoURL": video.asset->url, image{${imageFields}} } },
   _type == "sectionContentBlocks" => {...,  blocks[]{..., "videoURL": video.asset->url, image{${imageFields}} }  },
   _type == "sectionTextImage" => {..., image{${imageFields}} },
+  _type == "sectionTextCTA" => {...},
   _type == "sectionSpeakers" => {..., speakers[]{..., image{${imageFields}}, companyLogo{${imageFields}} } },
 `)
 
@@ -121,6 +122,13 @@ export async function getRelatedBlogPosts(project) {
   return relatedPosts
 }
 
+export async function getBlogPostsByPartner(partner) {
+  const posts = await client.fetch(`
+    *[_type == 'contentBlog' && '${partner._id}' in partners[]->_id ]{${blogPostQuery}}
+  `)
+  return posts
+}
+
 // Projects
 
 const projectFields = `..., "tags": tags[]->{name, slug}, mainImage{${imageFields}}, thumbnail{${imageFields}}, content[]{${sectionBlocks}}`
@@ -160,16 +168,49 @@ export async function getProjectsByTag(tag) {
   return projects
 }
 
+export async function getProjectsByPartner(partner) {
+  const projects = await client.fetch(`*[_type == "contentProject" && '${partner._id}' in partners[]->_id ]{${projectFields}} | order(launchDate desc)`)
+  return projects
+}
+
+// Partners
+
+const partnerFields = `..., tier->{...}, logo{${imageFields}}, clients[]->{..., logo{${imageFields}}, caseStudy->{slug} }, contentBlocks[]{${sectionBlocks}}`
+
+export async function getPartnersPageContent() {
+  const content = await client.fetch(`*[_type == "pagePartners"]{..., image{${imageFields}}, contentBlocks[]{${sectionBlocks}},}`)
+  return content[0]
+}
+
+export async function getPartners() {
+  const content = await client.fetch(`*[_type == "contentPartner"]{${partnerFields}}`)
+  return content
+}
+
+export async function getPartnersByTier() {
+  const tiers = await client.fetch(`*[_type == "categoryPartner"]{...} | order(orderRank)`)
+  const test = await Promise.all(tiers.map( async (tier) => {
+    const partners = await client.fetch(`*[_type == "contentPartner" && active == true && tier._ref == '${tier._id}']{${partnerFields}} | order(orderRank)`)
+    return {
+      tier,
+      partners
+    }
+  }))
+  return test
+}
 
 
 
-// Unvalidated
-
+// Pages
 
 export async function getPages() {
   const content = await client.fetch(`*[_type == "pageGeneral"]{..., content[]{${sectionBlocks}},}`)
   return content
 }
+
+
+
+// Unvalidated
 
 // Events
 
