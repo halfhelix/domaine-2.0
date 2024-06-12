@@ -3,6 +3,8 @@ import {defineConfig} from 'sanity'
 import {presentationTool} from 'sanity/presentation'
 import {structureTool} from 'sanity/structure'
 import {media} from 'sanity-plugin-media'
+import {muxInput} from 'sanity-plugin-mux-input'
+// import React from 'react'
 
 
 import { structure } from './domaine-cms/schemaTypes/structure'
@@ -18,6 +20,7 @@ export default defineConfig({
       structure: structure
     }),
     media(),
+    muxInput(),
     // presentationTool({
     //   previewUrl: 'http://localhost:4321/staging/'
     // }),

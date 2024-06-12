@@ -1,11 +1,40 @@
 
 import { sanityClient } from "sanity:client"
 import imageUrlBuilder from '@sanity/image-url'
+import SanityPicture, {  setSanityPictureDefaults} from "astro-sanity-picture";
 
 
 
-const builder = imageUrlBuilder(sanityClient)
+export const urlBuilder = imageUrlBuilder(sanityClient)
+setSanityPictureDefaults({ imageUrlBuilder: urlBuilder })
 
 export function urlFor(source) {
-  return builder.image(source)
+  return urlBuilder.image(source)
+}
+
+export const imageFields = 'image{ crop, asset->{_id, metadata}, alt }'
+
+export const projectsGridQuery = (brand) => {
+  return `*[_type == "type_project" && agencyBrand->name == "${brand}" ] { 
+    title,
+    excerpt,
+    slug, 
+    industry->{...}, 
+    partners[]->{...}, 
+    features[]->{ title, slug }, 
+    services[]->{ serviceGroup->{title, slug} }, 
+    thumbnailImage{${imageFields}},
+    orderRank,
+  } | order(orderRank)`
+}
+
+export const projectPostQuery = (brand) => {
+  return `*[_type == "type_project" && agencyBrand->name == "${brand}"] { 
+    ..., 
+    heroImage{${imageFields}}, 
+    client->{...}, 
+    services[]->{..., serviceGroup->{..., serviceType->{...} } }, 
+    industry->{...}, 
+    mux{ asset->{playbackId, assetId, filename}} 
+  }`
 }

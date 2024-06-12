@@ -1,27 +1,64 @@
 ---
 import { sanityClient } from 'sanity:client';
-import LayoutDomaine from '../../../layouts/LayoutDomaine.astro';
 import { paths } from '../../../components/global/utils/paths';
-import ProjectCard from '../../../components/global/atoms/atom_projectCard.astro';
+import LayoutDomaine from '../../../layouts/LayoutDomaine.astro';
+import Hero from '../../../components/domaine/sections/work/workIndex_Hero.astro'
+import { projectsGridQuery } from '../../../components/global/utils/cms-queries';
+import ProjectsFeed from '../../../components/global/projects/projectsFeed/projectsFeed.jsx';
 
-const projects = await sanityClient.fetch(`*[_type == "type_project" && agencyBrand->name == "Domaine"] | order( orderRank )`)
-const industries = await sanityClient.fetch(`*[_type == "type_industry"] | order(orderRank)`)
+const sortAlphabetically = (array, label) => {
+    array.sort((a: any, b: any) => {
+        return a[label].localeCompare(b[label]);
+    });
+}
 
+const getUniqueItems = (array: Array<any>, label: string) => {
+    return Array.from(new Set(array.map(item => item[label])))
+        .map(value => {
+            return array.find(item => item[label] === value);
+        });
+}
+
+const projects: Array<Project> = await sanityClient.fetch(projectsGridQuery("Domaine"))
+const allFeatures: Array<ProjectFeature> = projects.flatMap(project => project.features).filter(feature => feature !== null)
+const allIndustries: Array<Industry> = projects.map(project => project.industry).filter(industry => industry !== null)
+const allPartners: Array<Partner> = projects.flatMap(project => project.partners).filter(partner => partner !== null)
+const allServices: Array<Service> = projects.flatMap(project => {
+    if (project.services) {
+        return project.services.map((service) => {
+            return service.serviceGroup
+        })
+    }
+    return null
+}).filter(service => service !== null)
+
+const features = getUniqueItems(allFeatures, 'title')
+const industries = getUniqueItems(allIndustries, 'title')
+const services = getUniqueItems(allServices, 'title')
+const partners = getUniqueItems(allPartners, 'title')
+
+sortAlphabetically(features, 'title')
+sortAlphabetically(industries, 'title')
+sortAlphabetically(services, 'title')
+sortAlphabetically(partners, 'title')
+
+const pageSettings = await sanityClient.fetch(`*[_type == "page_projects-index" && _id == "page_projects-index-domaine"][0]`)
 ---
 <LayoutDomaine
-    title="Work"
+    title={pageSettings.metafields && pageSettings.metafields.title ? pageSettings.metafields.title : "Work"}
+    description={pageSettings.metafields && pageSettings.metafields.description ? pageSettings.metafields.description : null}
 >
-    <h1>Projects</h1>
-    <h4>Industries:</h4>
-    {industries.map((industry) => (
-        <a href={`${paths.root.projects.path}/${industry.slug.current}`}><h6>{industry.title}</h6></a>
-    ))}
-    <h4>Projects:</h4>
-    {projects.map((project) => (
-        <ProjectCard 
-            title={project.title}
-            excerpt={project.excerpt}
-            slug={project.slug.current}
-        />
-    ))}
+    <Hero
+        heading={pageSettings.heading}
+        subheading={pageSettings.subheading}
+    />
+    <ProjectsFeed 
+        projects={projects}
+        industries={industries}
+        services={services}
+        partners={partners}
+        features={features}
+        root={paths.root.projects.path}
+        client:load
+    />
 </LayoutDomaine>
