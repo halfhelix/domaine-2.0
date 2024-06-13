@@ -30,11 +30,23 @@ export const projectsGridQuery = (brand) => {
 
 export const projectPostQuery = (brand) => {
   return `*[_type == "type_project" && agencyBrand->name == "${brand}"] { 
-    ..., 
-    heroImage{${imageFields}}, 
+    title,
+    slug,
+    description,
+    backgroundColor,
+    foregroundColor,
+    url,
+    heroImage{${imageFields}},
+    heroVideo,
     client->{...}, 
     services[]->{..., serviceGroup->{..., serviceType->{...} } }, 
+    features[]->{...},
+    partners[]->{...},
+    metrics,
+    awards[],
     industry->{...}, 
-    mux{ asset->{playbackId, assetId, filename}} 
+    mux{ asset->{playbackId, assetId, filename}},
+    metafields,
   }`
 }
+

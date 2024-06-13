@@ -66,6 +66,30 @@ export default defineType({
       description: 'Project page main description.'
     }),
     defineField({
+      name: 'backgroundColor',
+      title: 'Background Color',
+      type: 'color',
+      group: 'info',
+      description: 'Project page background color.',
+      options: {
+        disableAlpha: true
+      },
+    }),
+    defineField({
+      name: 'foregroundColor',
+      title: 'Foreground Color',
+      type: 'string',
+      group: 'info',
+      description: 'Project page foreground color.',
+      options: {
+        list: [
+          { title: "Light", value: "light" },
+          { title: "Dark", value: "dark" },
+        ],
+      },
+      initialValue: "dark",
+    }),
+    defineField({
       name: 'url',
       title: 'URL',
       type: 'url',
@@ -74,12 +98,6 @@ export default defineType({
         scheme: ['http', 'https']
       })
     }),
-    // defineField({
-    //   name: 'projectCardMedia',
-    //   title: 'Project Card',
-    //   type: 'snippet_video',
-    //   group: 'media',
-    // }),
     defineField({
       name: 'thumbnailIsVideo',
       title: 'Thumbnail Image/Video',
@@ -144,13 +162,30 @@ export default defineType({
       to: [{ type: 'type_client'}]
     }),
     defineField({
+      name: 'agencyBrand',
+      title: 'Agency Brand',
+      type: 'reference',
+      to: [{ type: 'type_agencyBrand'}],
+      group: 'info',
+    }),
+    defineField({
       name: 'services',
       title: 'Services',
       type: 'array',
+      description: 'Only allows for selection of services offered by the agency brand(s) selected.',
       of: [{
         title: 'Service',
         type: 'reference',
         to: [{ type: 'type_service'}],
+        options: {
+          filter: ({ document }) => {
+            const agencyId = document?.agencyBrand?._ref;
+            return {
+              filter: '_type == "type_service" && references($agencyId)',
+              params: { agencyId }
+            };
+          }
+        }
       }],
       group: 'info',
     }),
@@ -163,13 +198,6 @@ export default defineType({
         type: 'reference',
         to: [{ type: 'type_projectFeature'}],
       }],
-      group: 'info',
-    }),
-    defineField({
-      name: 'agencyBrand',
-      title: 'Agency Brand',
-      type: 'reference',
-      to: [{ type: 'type_agencyBrand'}],
       group: 'info',
     }),
     defineField({
